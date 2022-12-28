@@ -73,11 +73,11 @@ abline(h=0.8,col="red")
 
 mar.default <- c(5,4,4,2)+0.1 #Default margin parameter
 par(mar=mar.default)
-bp <- barplot(height=svd.fern$u[,1],names.arg=env_vars,xlim=c(-1,1),las=1,main="1st environmental axis",horiz=TRUE,yaxt="n",xlab="Coefficient",ylab="Environmental factor")
+bp.env <- barplot(height=svd.fern$u[,1],names.arg=env_vars,xlim=c(-1,1),las=1,main="1st environmental axis",horiz=TRUE,yaxt="n",xlab="Coefficient",ylab="Environmental factor")
 axis(side=2,at=bp.env,labels=env_vars,pos=-0.5,las=1) #Axis on left
 axis(side=4,at=bp.env,labels=env_vars,pos=0.5,las=1) #Axis on right
 
-bp <- barplot(height=svd.fern$u[,2],names.arg=env_vars,xlim=c(-1,1),las=1,main="2nd environmental axis",horiz=TRUE,yaxt="n",xlab="Coefficient",ylab="Environmental factor")
+bp.env <- barplot(height=svd.fern$u[,2],names.arg=env_vars,xlim=c(-1,1),las=1,main="2nd environmental axis",horiz=TRUE,yaxt="n",xlab="Coefficient",ylab="Environmental factor")
 axis(side=2,at=bp.env,labels=env_vars,pos=-0.5,las=1) #Axis on left
 axis(side=4,at=bp.env,labels=env_vars,pos=0.5,las=1) #Axis on right
 
@@ -173,9 +173,13 @@ abline(h=0.8,col="purple")
 
 #Step 3: Projection plots
 ftoc <- function(ftype){ #Color based on forest types
-  switch(ftype, "K"="red", "PW"="navyblue", "MDF"="limegreen")
+  switch(ftype, "K"="magenta", "PW"="navyblue", "MDF"="limegreen")
 }
 pcolors <- sapply(env_data$forest.type,ftoc)
+ftos <- function(ftype){ #Symbol based on forest types  
+  switch(ftype, "K"=1, "PW"=2, "MDF"=3)
+}
+psymbs <- sapply(env_data$forest.type,ftos)
 
 
 projplot <- function(j, xmat, ymat) { #data projection plot along jth principal axis of svd, specialized for this dataset
@@ -188,9 +192,9 @@ projplot <- function(j, xmat, ymat) { #data projection plot along jth principal 
     xproj <- append(xproj,sum(xmat[i,]*svd.mats$u[,j])) #Left projections on horizontal axis
   }
   plottitle <- paste("Projection along axis:",j,sep="")
-  plot(xproj,yproj,xlab="Env",ylab="Fern composition",main=plottitle,col=pcolors) 
-  text(xproj,yproj,labels=env_data$plot,col=pcolors)#LABEL PLOT IDS, THIS CAN MAKE PLOT A BIT MESSY
-  legend("bottomright",legend=c("K","PW","MDF"),col=c("red","navyblue","limegreen"),pch=c(1,1,1),title="forest type")
+  plot(xproj,yproj,xlab="Env",ylab="Fern composition",main=plottitle,col=pcolors,pch=psymbs) 
+  #text(xproj,yproj,labels=env_data$plot,col=pcolors)#LABEL PLOT IDS, THIS CAN MAKE PLOT A BIT MESSY
+  legend("bottomright",legend=c("HF","PSF","MDF"),col=c("magenta","navyblue","limegreen"),pch=psymbs,title="Forest Types")
   abline(h=0)
   abline(v=0)
 } #BUG: Plot IDs are not labelled FIXED
